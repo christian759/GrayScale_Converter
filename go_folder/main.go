@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 )
 
+// global varable
 var folderpath string = "picture_folder"
 var varable int = 0
 
@@ -31,6 +32,7 @@ func grayScaler(img image.Image) *image.Gray {
 	return grayImg
 }
 
+// main function
 func main() {
 
 	files, err := os.ReadDir(folderpath)
@@ -61,6 +63,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		//closing files
 		defer f.Close()
 
 		grayImg := grayScaler(img)
