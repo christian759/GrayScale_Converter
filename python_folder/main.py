@@ -1,7 +1,7 @@
 from PIL import Image
 import os
 
-folder_path: str = "python_folder/picture_folder"
+folder_path: str = "picture_folder"
 images: list = []
 imagePaths: list[str] = []
 
