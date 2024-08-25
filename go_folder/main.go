@@ -1,16 +1,21 @@
 package main
 
 import (
-	"fmt"
 	"image"
 	"log"
 	"os"
+	"strconv"
 
 	"image/color"
 	"image/jpeg"
 	"image/png"
+	"path/filepath"
 )
 
+var folderpath string = "picture_folder"
+var varable int = 0
+
+// converting image to GrayScale
 func grayScaler(img image.Image) *image.Gray {
 	grayImg := image.NewGray(img.Bounds())
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
@@ -28,32 +33,40 @@ func grayScaler(img image.Image) *image.Gray {
 
 func main() {
 
-	resp, err := os.Open("picture_folder/kk.jfif")
+	files, err := os.ReadDir(folderpath)
 	if err != nil {
-		fmt.Println("err")
+		log.Fatalf("Failed to read directory")
 	}
 
-	//Decode image to JPEG
-	img, err := jpeg.Decode(resp)
-	if err != nil {
-		//handling error
-		log.Fatalf("Failed to decode JPEG image: %v", err)
+	for _, file := range files {
+		varable++
+		filePaths := filepath.Join(folderpath, file.Name())
+
+		imgfile, err := os.Open(filePaths)
+		if err != nil {
+			log.Fatalf("Failed to open image path: %v", err)
+		}
+
+		//Decode image to JPEG
+		img, err := jpeg.Decode(imgfile)
+		if err != nil {
+			//handling error
+			log.Fatalf("Failed to decode JPEG image: %v", err)
+		}
+		log.Printf("Image type: %T", img)
+
+		//Working with grayScale image, e.g conver to png
+		var imagename string = "image" + strconv.Itoa(varable)
+		f, err := os.Create(imagename)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+
+		grayImg := grayScaler(img)
+		if err := png.Encode(f, grayImg); err != nil {
+			log.Fatal(err)
+		}
+
 	}
-	log.Printf("Image type: %T", img)
-
-	//converting image to GrayScale
-
-	//Working with grayScale image, e.g conver to png
-	f, err := os.Create("five_years.png")
-	if err != nil {
-		// handling error
-		log.Fatal(err)
-	}
-	defer f.Close()
-
-	grayImg := grayScaler(img)
-	if err := png.Encode(f, grayImg); err != nil {
-		log.Fatal(err)
-	}
-
 }
