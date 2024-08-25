@@ -56,7 +56,7 @@ func main() {
 		log.Printf("Image type: %T", img)
 
 		//Working with grayScale image, e.g conver to png
-		var imagename string = "image" + strconv.Itoa(varable)
+		var imagename string = "image" + strconv.Itoa(varable) + ".png"
 		f, err := os.Create(imagename)
 		if err != nil {
 			log.Fatal(err)
